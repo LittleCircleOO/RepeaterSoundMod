@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.0.11'
+    id 'fabric-loom' version '1.9-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -7,16 +7,13 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-    maven {
-        url 'https://maven.aliyun.com/nexus/content/groups/public'
-    }
-    maven {
-        url 'https://repository.hanbings.io/proxy'
-    }
-    maven {
-        name = "Nova Committee - Release"
-        url = "https://maven.nova-committee.cn/releases/"
-    }
+    // Add repositories to retrieve artifacts from in here.
+    // You should only use this when depending on other mods because
+    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+    // for more information about repositories.
+
+
 }
 
 dependencies {
@@ -31,14 +28,18 @@ dependencies {
 
 processResources {
     inputs.property "version", project.version
+    inputs.property "minecraft_version", project.minecraft_version
+    inputs.property "loader_version", project.loader_version
     filteringCharset "UTF-8"
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.version
+        expand "version": project.version,
+                "minecraft_version": project.minecraft_version,
+                "loader_version": project.loader_version
     }
 }
 
-def targetJavaVersion = 8
+def targetJavaVersion = 17
 tasks.withType(JavaCompile).configureEach {
     // ensure that the encoding is set to UTF-8, no matter what the system default is
     // this fixes some edge cases with special characters not displaying correctly
@@ -64,7 +65,7 @@ java {
 
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
+        rename { "${it}_${project.archivesBaseName}"}
     }
 }
 

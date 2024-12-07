@@ -2,6 +2,7 @@ package heyblack.repeatersound.config;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import heyblack.repeatersound.RepeaterSound;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,7 +19,7 @@ import java.util.stream.StreamSupport;
 
 public class ConfigUpdater
 {
-    static Logger logger = LogManager.getLogger();
+    static Logger logger = RepeaterSound.LOGGER;
 
     static Path dir = FabricLoader.getInstance().getConfigDir();
 
@@ -36,16 +37,16 @@ public class ConfigUpdater
                     .orElse(null);
 
             if(cfgPath != null)
-                logger.info("[RepeaterSound] Found old config file, updating to current version");
+                logger.info("Found old config file, updating to current version");
             else
-                logger.info("[RepeaterSound] Missing config file, creating a new one");
+                logger.info("Missing config file, creating a new one");
 
             return cfgPath;
         }
         catch (IOException e)
         {
             e.printStackTrace();
-            logger.error("[RepeaterSound] Error occurred when getting config file!");
+            logger.error("Error occurred when getting config file!");
             return null;
         }
     }
@@ -60,7 +61,7 @@ public class ConfigUpdater
         {
             try
             {
-                logger.info("[RepeaterSound] Updating outdated config file (version below 1.3.0)");
+                logger.info("Updating outdated config file (version below 1.3.0)");
                 reader = new JsonReader(new FileReader(CONFIG_OLD.toFile()));
                 Config cfg_old = new Gson().fromJson(reader, Config.class);
                 String pitch = String.valueOf(cfg_old.getBasePitch());
@@ -77,7 +78,7 @@ public class ConfigUpdater
             }
             catch (IOException e)
             {
-                logger.error("[RepeaterSound] Error occurred when updating config file!");
+                logger.error("Error occurred when updating config file!");
                 throw new RuntimeException(e);
             }
         }
@@ -96,7 +97,7 @@ public class ConfigUpdater
             }
             catch (IOException e)
             {
-                logger.error("[RepeaterSound] Error occurred when updating config file!");
+                logger.error("Error occurred when updating config file!");
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
