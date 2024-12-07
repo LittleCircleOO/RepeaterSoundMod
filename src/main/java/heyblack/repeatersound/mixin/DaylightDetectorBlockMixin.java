@@ -30,7 +30,7 @@ public class DaylightDetectorBlockMixin
     @Shadow @Final public static BooleanProperty INVERTED;
 
     @Inject(method = "onUse", at = @At("HEAD"))
-    public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
+    public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
     {
         if (world.isClient)
         {

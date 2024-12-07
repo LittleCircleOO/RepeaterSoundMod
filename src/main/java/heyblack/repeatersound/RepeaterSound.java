@@ -6,28 +6,30 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import heyblack.repeatersound.config.ConfigManager;
 import heyblack.repeatersound.util.ServerCloseCallback;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class RepeaterSound implements ClientModInitializer
 {
     public static final String MOD_ID = "repeatersound";
     public static final String MOD_VERSION = FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow(RuntimeException::new).getMetadata().getVersion().getFriendlyString();
 
-    public static final SoundEvent BLOCK_REPEATER_CLICK = register("repeatersound:repeater_click");
-    public static final SoundEvent BLOCK_REDSTONE_WIRE_CLICK = register("repeatersound:redstone_wire_click");
-    public static final SoundEvent BLOCK_DAYLIGHT_DETECTOR_CLICK = register("repeatersound:daylight_detector_click");
-    public static final SoundEvent CLICK_ALARM = register("repeatersound:click_alarm");
+    public static final SoundEvent BLOCK_REPEATER_CLICK = register("repeater_click");
+    public static final SoundEvent BLOCK_REDSTONE_WIRE_CLICK = register("redstone_wire_click");
+    public static final SoundEvent BLOCK_DAYLIGHT_DETECTOR_CLICK = register("daylight_detector_click");
+    public static final SoundEvent CLICK_ALARM = register("click_alarm");
 
     @Override
     public void onInitializeClient()
     {
         ConfigManager cfg = ConfigManager.getInstance();
 
-        ClientCommandManager.DISPATCHER.register(
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
                 ClientCommandManager.literal("repeatersound")
                         .then(ClientCommandManager.literal("setBasePitch")
                                 .then(ClientCommandManager.argument("basePitch", FloatArgumentType.floatArg())
@@ -85,13 +87,14 @@ public class RepeaterSound implements ClientModInitializer
                                                 "disabledMessage",
                                                 String.valueOf(StringArgumentType.getString(ctx, "message")),
                                                 ctx.getSource().getPlayer()
-                                        ))))
+                                        )))))
         );
 
         ServerCloseCallback.EVENT.register(cfg);
     }
 
     private static SoundEvent register(String id) {
-        return (SoundEvent)Registry.register(Registry.SOUND_EVENT, id, new SoundEvent(new Identifier(id)));
+        Identifier identifier = Identifier.of("repeatersound", id);
+        return Registry.register(Registries.SOUND_EVENT, identifier, SoundEvent.of(identifier));
     }
 }

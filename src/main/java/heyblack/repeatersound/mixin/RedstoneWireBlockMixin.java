@@ -31,7 +31,7 @@ public class RedstoneWireBlockMixin
         return false;
     }
     @Inject( method = "onUse", at = @At(value = "RETURN", ordinal = 1))
-    public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
+    public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
     {
         if (world.isClient)
         {

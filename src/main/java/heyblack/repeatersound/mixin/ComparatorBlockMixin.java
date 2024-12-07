@@ -34,7 +34,7 @@ public class ComparatorBlockMixin
     World world;
 
     @Inject(method = "onUse", at = @At(value = "HEAD"))
-    public void getData(BlockState s, World w, BlockPos pos, PlayerEntity p, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
+    public void getData(BlockState s, World w, BlockPos pos, PlayerEntity p, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
     {
         state = s;
         player = p;
