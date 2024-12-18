@@ -1,6 +1,7 @@
 package heyblack.repeatersound.mixin;
 
 import heyblack.repeatersound.config.ConfigManager;
+import heyblack.repeatersound.config.ConfigOption;
 import heyblack.repeatersound.util.AffectedBlocks;
 import heyblack.repeatersound.util.InteractionMode;
 import net.fabricmc.api.EnvType;
@@ -25,15 +26,15 @@ public class ClientPlayerInteractionManagerMixin
     @Inject(method = "interactBlock", at = @At(value = "HEAD"), cancellable = true)
     public void disableInteraction(ClientPlayerEntity player, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir)
     {
-        World world = player.getWorld();
         ConfigManager cfg = ConfigManager.getInstance();
-        InteractionMode mode = InteractionMode.valueOf(cfg.getConfig("interactionMode"));
+        InteractionMode mode = InteractionMode.valueOf(cfg.getConfig(ConfigOption.INTERACTION_MODE.id));
         if (mode == InteractionMode.DISABLED)
         {
+            World world = player.getWorld();
             Block block = world.getBlockState(hitResult.getBlockPos()).getBlock();
             if (AffectedBlocks.get().contains(block))
             {
-                player.sendMessage(Text.of(cfg.getConfig("disabledMessage")), true);
+                player.sendMessage(Text.of(cfg.getConfig(ConfigOption.DISABLED_MESSAGE.id)), true);
                 cir.setReturnValue(ActionResult.FAIL);
             }
         }
