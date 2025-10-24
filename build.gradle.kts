@@ -9,6 +9,7 @@ operator fun Project.get(property: String): String {
 
 version = project["mod_version"]
 group = project["maven_group"]
+val targetJavaVersion = 17
 
 base {
     archivesName = "${project["archives_base_name"]}_${project["minecraft_version"]}"
@@ -41,9 +42,14 @@ tasks.processResources {
             "minecraft_compat" to project["minecraft_compat"]
         )
     }
+
+    filesMatching("*.mixins.json") {
+        expand(
+            "javaVersion" to targetJavaVersion
+        )
+    }
 }
 
-val targetJavaVersion = 17
 tasks.withType<JavaCompile>().configureEach {
     options.release = targetJavaVersion
 }
