@@ -11,7 +11,7 @@ version = project["mod_version"]
 group = project["maven_group"]
 
 base {
-    archivesName = project["archives_base_name"]
+    archivesName = "${project["archives_base_name"]}_${project["minecraft_version"]}"
 }
 
 repositories {
@@ -34,29 +34,18 @@ dependencies {
 
 tasks.processResources {
     inputs.property("version", project["version"])
-    inputs.property("minecraft_version", project["minecraft_version"])
-    inputs.property("loader_version", project["loader_version"])
-    filteringCharset = "UTF-8"
 
     filesMatching("fabric.mod.json") {
         expand(
             "version" to project["version"],
-            "minecraft_version" to project["minecraft_version"],
-            "loader_version" to project["loader_version"]
+            "minecraft_compat" to project["minecraft_compat"]
         )
     }
 }
 
 val targetJavaVersion = 17
 tasks.withType<JavaCompile>().configureEach {
-    // ensure that the encoding is set to UTF-8, no matter what the system default is
-    // this fixes some edge cases with special characters not displaying correctly
-    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-    // If Javadoc is generated, this must be specified in that task too.
-    options.encoding = "UTF-8"
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        options.release = targetJavaVersion
-    }
+    options.release = targetJavaVersion
 }
 
 java {
@@ -71,8 +60,10 @@ java {
 }
 
 tasks.jar {
+    inputs.property("archivesName", base.archivesName.get())
+
     from("LICENSE") {
-        rename { "${it}_${base.archivesName.get()}"}
+        rename { "${it}_${project["archives_base_name"]}"}
     }
 }
 
