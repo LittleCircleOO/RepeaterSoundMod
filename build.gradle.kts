@@ -9,15 +9,26 @@ operator fun Project.get(property: String): String {
 
 version = project["mod_version"]
 group = project["maven_group"]
-val targetJavaVersion = 17
+var currentVersion = stonecutter.current.version
+val targetJavaVersion =
+    if(stonecutter.eval(currentVersion, "<=1.16.5")) 8
+    else if(stonecutter.eval(currentVersion, "<=1.17.1")) 16
+    else if(stonecutter.eval(currentVersion, "<=1.20.4")) 17
+    else 21
 
 base {
     archivesName = "${project["archives_base_name"]}_${project["minecraft_version"]}"
 }
 
 repositories {
+    //ModMenu
     maven("https://maven.terraformersmc.com/releases/")
+
+    //ClothConfig
     maven("https://maven.shedaniel.me/")
+
+    //PlaceholderApi, used by ModMenu
+    maven("https://maven.nucleoid.xyz/") { name = "Nucleoid" }
 }
 
 dependencies {
