@@ -31,7 +31,7 @@ public class RepeaterBlockMixin
     @Inject(method = "onUse", at = @At("TAIL"))
     public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
     {
-        if (world.isClient)
+        if (world.isClient())
         {
             ConfigManager cfg = ConfigManager.getInstance();
             float basePitch = Float.parseFloat(cfg.getConfig(ConfigOption.BASE_PITCH.id));

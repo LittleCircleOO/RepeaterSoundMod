@@ -45,7 +45,7 @@ public class ComparatorBlockMixin
     @ModifyArgs(method = "onUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;playSound(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FF)V"))
     public void pitch(Args args)
     {
-        if (world.isClient)
+        if (world.isClient())
         {
             ConfigManager cfg = ConfigManager.getInstance();
             float basePitch = Float.parseFloat(cfg.getConfig(ConfigOption.BASE_PITCH.id));

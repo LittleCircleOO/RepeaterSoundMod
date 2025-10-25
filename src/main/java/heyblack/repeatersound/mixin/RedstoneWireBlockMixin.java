@@ -33,7 +33,7 @@ public class RedstoneWireBlockMixin
     @Inject( method = "onUse", at = @At(value = "RETURN", ordinal = 1))
     public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
     {
-        if (world.isClient)
+        if (world.isClient())
         {
             ConfigManager cfg = ConfigManager.getInstance();
             float basePitch = Float.parseFloat(cfg.getConfig(ConfigOption.BASE_PITCH.id));
