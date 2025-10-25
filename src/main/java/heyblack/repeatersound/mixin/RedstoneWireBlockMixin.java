@@ -21,6 +21,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+// Version Specific
+//? if <=1.20.4
+/*import net.minecraft.util.Hand;*/
+
 @Environment(value= EnvType.CLIENT)
 @Mixin(RedstoneWireBlock.class)
 public class RedstoneWireBlockMixin
@@ -31,7 +35,12 @@ public class RedstoneWireBlockMixin
         return false;
     }
     @Inject( method = "onUse", at = @At(value = "RETURN", ordinal = 1))
+    // Version Specific
+    //? if <=1.20.4 {
+    /*public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
+    *///?} else {
     public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
+    //?}
     {
         if (world.isClient())
         {

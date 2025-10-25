@@ -17,7 +17,7 @@ val targetJavaVersion =
     else 21
 
 base {
-    archivesName = "${project["archives_base_name"]}_${project["minecraft_version"]}"
+    archivesName = "${project["archives_base_name"]}_${stonecutter.current.version}"
 }
 
 repositories {
@@ -33,7 +33,7 @@ repositories {
 
 dependencies {
     // To change the versions see the gradle.properties file
-    minecraft("com.mojang:minecraft:${project["minecraft_version"]}")
+    minecraft("com.mojang:minecraft:${stonecutter.current.version}")
     mappings("net.fabricmc:yarn:${project["yarn_mappings"]}:v2")
     modImplementation("net.fabricmc:fabric-loader:${project["loader_version"]}")
 

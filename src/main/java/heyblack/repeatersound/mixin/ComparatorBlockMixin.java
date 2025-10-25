@@ -22,6 +22,10 @@ import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
+// Version Specific
+//? if <=1.20.4
+/*import net.minecraft.util.Hand;*/
+
 import static net.minecraft.block.ComparatorBlock.MODE;
 
 @Environment(value= EnvType.CLIENT)
@@ -34,7 +38,12 @@ public class ComparatorBlockMixin
     World world;
 
     @Inject(method = "onUse", at = @At(value = "HEAD"))
+    // Version Specific
+    //? if <=1.20.4 {
+    /*public void getData(BlockState s, World w, BlockPos pos, PlayerEntity p, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
+    *///?} else {
     public void getData(BlockState s, World w, BlockPos pos, PlayerEntity p, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
+    //?}
     {
         state = s;
         player = p;

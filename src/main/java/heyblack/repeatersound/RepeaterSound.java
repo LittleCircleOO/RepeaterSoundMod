@@ -8,15 +8,27 @@ import heyblack.repeatersound.config.ConfigOption;
 import heyblack.repeatersound.util.InteractionMode;
 import heyblack.repeatersound.util.ServerCloseCallback;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+// Version Specific
+// Fabric-Command-Api-V2
+//? if <=1.18.2 {
+/*import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+*///?} else {
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+//?}
+// Registry
+//? if <=1.19.2 {
+/*import net.minecraft.util.registry.Registry;
+*///?} else {
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+//?}
 
 public class RepeaterSound implements ClientModInitializer
 {
@@ -35,7 +47,12 @@ public class RepeaterSound implements ClientModInitializer
     {
         ConfigManager cfg = ConfigManager.getInstance();
 
+        // Fabric-Api Specific
+        //? if <=1.18.2 {
+        /*ClientCommandManager.DISPATCHER.register(
+        *///?} else {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, environment) -> dispatcher.register(
+        //?}
                 ClientCommandManager.literal("repeatersound")
                         .then(ClientCommandManager.literal("setBasePitch")
                                 .then(ClientCommandManager.argument(ConfigOption.BASE_PITCH.id, FloatArgumentType.floatArg())
@@ -95,14 +112,31 @@ public class RepeaterSound implements ClientModInitializer
                                                 String.valueOf(StringArgumentType.getString(ctx, ConfigOption.DISABLED_MESSAGE.id)),
                                                 ctx.getSource().getPlayer()
                                         ))))
+
+        //? if <=1.18.2 {
+        /*);
+        *///?} else {
         ));
+        //?}
+
 
         ServerCloseCallback.EVENT.register(cfg);
     }
 
     private static SoundEvent register(String id) {
-        Identifier identifier = Identifier.of("repeatersound", id);
+        // Version Specific
+        // Identifier.of
+        //? if <=1.18.2 {
+        /*Identifier identifier = new Identifier(MOD_ID, id);
+        *///?} else {
+        Identifier identifier = Identifier.of(MOD_ID, id);
+        //?}
+        // Registry, SoundEvent.of
+        //? if <=1.19.2 {
+        /*return Registry.register(Registry.SOUND_EVENT, identifier, new SoundEvent(identifier));
+        *///?} else {
         return Registry.register(Registries.SOUND_EVENT, identifier, SoundEvent.of(identifier));
+        //?}
     }
 
     public static void info(String s) {
