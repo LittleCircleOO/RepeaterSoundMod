@@ -2,8 +2,8 @@
 
 [![Modrinth Downloads](https://img.shields.io/modrinth/dt/vt4lfXNC?color=%2300AF5C&logo=modrinth&style=flat-square)](https://modrinth.com/mod/repeater-sound)
 [![GitHub all releases](https://img.shields.io/github/downloads/HeyBlack233/RepeaterSoundMod/total?color=191970&logo=github&logoColor=181717&style=flat-square)](https://github.com/HeyBlack233/RepeaterSoundMod/releases)
-![Mod Version](https://img.shields.io/badge/Version-1.4.0-orange?style=flat-square)
-![MC Version](https://img.shields.io/badge/Minecraft-1.16%20--%201.20-blue?style=flat-square)
+![Mod Version](https://img.shields.io/badge/Version-1.7.0-orange?style=flat-square)
+![MC Version](https://img.shields.io/badge/Minecraft-1.16%20--%201.21.10-blue?style=flat-square)
 
 ## Features
 
@@ -68,3 +68,23 @@ Command `/repeatersound` allows you to edit the options in-game, here is a list 
 ### Config File
 
 After the first initialize of the mod, a config file `repeatersound[version].json` will be created in the game's `config` directory. You can edit this file manually if you want.
+
+## New features in the current fork | 当前分叉新特性
+
+### Multi-Version + Compatibility with High Version (1.21.5+) | 多版本+高版本(1.21.5+)适配
+* Merged all code differences from 1.16.5 to 1.21.4, organized the code differences through StoneCutter, and supports building multiple versions in one go
+* Compatible with all versions between 1.21.5 and 1.21.10, currently supporting all versions from 1.16.5 to 1.21.10
+* 合并了目前 1.16.5~1.21.4 的全部代码差异，通过 StoneCutter 组织代码差异，并支持一次构建多个版本
+* 适配了 1.21.5~1.21.10 间的全部版本，目前已支持 1.16.5~1.21.10 的全部版本
+
+### Version Compatibility List | 版本兼容列表
+| Mod version \| 模组版本 | Compatible Game Versions \| 兼容游戏版本 |
+|---------------------|------------------------------------|
+| 1.16.5              | 1.16-1.16.5                        |
+| 1.17.1              | 1.17-1.17.1                        |
+| 1.18.2              | 1.18-1.18.2                        |
+| 1.19.2              | 1.19-1.19.2                        |
+| 1.20.4              | 1.19.3-1.20.4                      |
+| 1.21.4              | 1.20.5-1.21.4                      |
+| 1.21.8              | 1.21.5-1.21.8                      |
+| 1.21.10             | 1.21.9-1.21.10                     |
