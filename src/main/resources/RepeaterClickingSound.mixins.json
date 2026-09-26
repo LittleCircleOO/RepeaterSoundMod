@@ -2,12 +2,12 @@
   "required": true,
   "minVersion": "0.8",
   "package": "heyblack.repeatersound.mixin",
-  "compatibilityLevel": "JAVA_${javaVersion}",
+  "compatibilityLevel": "JAVA_${java}",
   "client": [
-    "ClientPlayerInteractionManagerMixin",
     "ComparatorBlockMixin",
     "DaylightDetectorBlockMixin",
     "MinecraftServerMixin",
+    "MultiPlayerGameModeMixin",
     "RedstoneWireBlockMixin",
     "RepeaterBlockMixin"
   ],

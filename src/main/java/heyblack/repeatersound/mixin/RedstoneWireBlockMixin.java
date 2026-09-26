@@ -4,17 +4,16 @@ import heyblack.repeatersound.RepeaterSound;
 import heyblack.repeatersound.config.ConfigManager;
 import heyblack.repeatersound.config.ConfigOption;
 import heyblack.repeatersound.util.InteractionMode;
+import heyblack.repeatersound.util.Texts;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.RedstoneWireBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,33 +21,46 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Version Specific
-//? if <=1.20.4
-/*import net.minecraft.util.Hand;*/
+//? if <=26.2 {
+import net.minecraft.world.level.block.RedStoneWireBlock;
+//?} else {
+/*import net.minecraft.world.level.block.RedstoneWireBlock;
+*///?}
+//? if <=1.20.4 {
+/*import net.minecraft.world.InteractionHand;
+*///?}
 
-@Environment(value= EnvType.CLIENT)
-@Mixin(RedstoneWireBlock.class)
+@Environment(value = EnvType.CLIENT)
+// Version Specific
+//? if <=26.2 {
+@Mixin(RedStoneWireBlock.class)
+//?} else {
+/*@Mixin(RedstoneWireBlock.class)
+*///?}
 public class RedstoneWireBlockMixin
 {
     @Shadow
-    protected static boolean isFullyConnected(BlockState state)
+    private static boolean isCross(BlockState state)
     {
         return false;
     }
-    @Inject( method = "onUse", at = @At(value = "RETURN", ordinal = 1))
+
     // Version Specific
     //? if <=1.20.4 {
-    /*public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
+    /*@Inject(method = "use", at = @At(value = "RETURN", ordinal = 1))
+    public void playSound(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir)
     *///?} else {
-    public void playSound(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
+    @Inject(method = "useWithoutItem", at = @At(value = "RETURN", ordinal = 1))
+    public void playSound(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir)
     //?}
     {
-        if (world.isClient())
+        if (level.isClientSide())
         {
             ConfigManager cfg = ConfigManager.getInstance();
             float basePitch = Float.parseFloat(cfg.getConfig(ConfigOption.BASE_PITCH.id));
             float pitch = Boolean.parseBoolean(cfg.getConfig(ConfigOption.USE_RANDOM.id)) ?
                     (float) (basePitch + (Math.random() - 0.5) * 0.25) :
-                    this.isFullyConnected(state) ?
+                    isCross(state) ?
                             basePitch :
                             basePitch + 0.05f;
             float volume = Float.parseFloat(cfg.getConfig(ConfigOption.VOLUME.id));
@@ -57,11 +69,11 @@ public class RedstoneWireBlockMixin
             switch (mode)
             {
                 case NORMAL:
-                    world.playSound(player, pos, RepeaterSound.BLOCK_REDSTONE_WIRE_CLICK, SoundCategory.BLOCKS, volume, pitch);
+                    level.playSound(player, pos, RepeaterSound.BLOCK_REDSTONE_WIRE_CLICK, SoundSource.BLOCKS, volume, pitch);
                     break;
                 case ALARM:
-                    world.playSound(player, pos, RepeaterSound.CLICK_ALARM, SoundCategory.BLOCKS, volume, pitch);
-                    player.sendMessage(Text.of(cfg.getAlarmMessage(state, pos)), false);
+                    level.playSound(player, pos, RepeaterSound.CLICK_ALARM, SoundSource.BLOCKS, volume, pitch);
+                    Texts.send(player, cfg.getAlarmMessage(state, pos), false);
                     break;
             }
         }

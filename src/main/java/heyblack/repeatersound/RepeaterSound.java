@@ -6,28 +6,38 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import heyblack.repeatersound.config.ConfigManager;
 import heyblack.repeatersound.config.ConfigOption;
 import heyblack.repeatersound.util.InteractionMode;
+import heyblack.repeatersound.util.Commands;
 import heyblack.repeatersound.util.ServerCloseCallback;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
+import net.minecraft.sounds.SoundEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 // Version Specific
-// Fabric-Command-Api-V2
+// Fabric-Command-Api
 //? if <=1.18.2 {
 /*import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.literal;
+*///?} elif >=26.1 {
+/*import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 *///?} else {
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 //?}
 // Registry
 //? if <=1.19.2 {
-/*import net.minecraft.util.registry.Registry;
+/*import net.minecraft.core.Registry;
 *///?} else {
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+//?}
+// Identifier
+//? if >=1.21.11 {
+/*import net.minecraft.resources.Identifier;
+*///?} else {
+import net.minecraft.resources.ResourceLocation;
 //?}
 
 public class RepeaterSound implements ClientModInitializer
@@ -53,33 +63,33 @@ public class RepeaterSound implements ClientModInitializer
         *///?} else {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, environment) -> dispatcher.register(
         //?}
-                ClientCommandManager.literal("repeatersound")
-                        .then(ClientCommandManager.literal("setBasePitch")
-                                .then(ClientCommandManager.argument(ConfigOption.BASE_PITCH.id, FloatArgumentType.floatArg())
+                literal("repeatersound")
+                        .then(literal("setBasePitch")
+                                .then(Commands.argument(ConfigOption.BASE_PITCH.id, FloatArgumentType.floatArg())
                                         .executes(ctx -> cfg.setConfigCommand(
                                                 ConfigOption.BASE_PITCH.id,
                                                 String.valueOf(FloatArgumentType.getFloat(ctx, ConfigOption.BASE_PITCH.id)),
                                                 ctx.getSource().getPlayer()
                                         ))))
 
-                        .then(ClientCommandManager.literal("useRandomPitch")
-                                .then(ClientCommandManager.argument(ConfigOption.USE_RANDOM.id, BoolArgumentType.bool())
+                        .then(literal("useRandomPitch")
+                                .then(Commands.argument(ConfigOption.USE_RANDOM.id, BoolArgumentType.bool())
                                         .executes(ctx -> cfg.setConfigCommand(
                                                 ConfigOption.USE_RANDOM.id,
                                                 String.valueOf(BoolArgumentType.getBool(ctx, ConfigOption.USE_RANDOM.id)),
                                                 ctx.getSource().getPlayer()
                                         ))))
 
-                        .then(ClientCommandManager.literal("setVolume")
-                                .then(ClientCommandManager.argument(ConfigOption.VOLUME.id, FloatArgumentType.floatArg())
+                        .then(literal("setVolume")
+                                .then(Commands.argument(ConfigOption.VOLUME.id, FloatArgumentType.floatArg())
                                         .executes(ctx -> cfg.setConfigCommand(
                                                 ConfigOption.VOLUME.id,
                                                 String.valueOf(FloatArgumentType.getFloat(ctx, ConfigOption.VOLUME.id)),
                                                 ctx.getSource().getPlayer()
                                         ))))
 
-                        .then(ClientCommandManager.literal("interactionMode")
-                                .then(ClientCommandManager.argument(ConfigOption.INTERACTION_MODE.id, StringArgumentType.string())
+                        .then(literal("interactionMode")
+                                .then(Commands.argument(ConfigOption.INTERACTION_MODE.id, StringArgumentType.string())
                                         .suggests(
                                                 (ctx, builder) ->
                                                 {
@@ -97,16 +107,16 @@ public class RepeaterSound implements ClientModInitializer
                                                 ctx.getSource().getPlayer()
                                         ))))
 
-                        .then(ClientCommandManager.literal("alarmMessage")
-                                .then(ClientCommandManager.argument(ConfigOption.INTERACTION_MODE.id, StringArgumentType.string())
+                        .then(literal("alarmMessage")
+                                .then(Commands.argument(ConfigOption.ALARM_MESSAGE.id, StringArgumentType.string())
                                         .executes(ctx -> cfg.setConfigCommand(
-                                                ConfigOption.INTERACTION_MODE.id,
-                                                String.valueOf(StringArgumentType.getString(ctx, ConfigOption.INTERACTION_MODE.id)),
+                                                ConfigOption.ALARM_MESSAGE.id,
+                                                String.valueOf(StringArgumentType.getString(ctx, ConfigOption.ALARM_MESSAGE.id)),
                                                 ctx.getSource().getPlayer()
                                         ))))
 
-                        .then(ClientCommandManager.literal("disabledMessage")
-                                .then(ClientCommandManager.argument(ConfigOption.DISABLED_MESSAGE.id, StringArgumentType.string())
+                        .then(literal("disabledMessage")
+                                .then(Commands.argument(ConfigOption.DISABLED_MESSAGE.id, StringArgumentType.string())
                                         .executes(ctx -> cfg.setConfigCommand(
                                                 ConfigOption.DISABLED_MESSAGE.id,
                                                 String.valueOf(StringArgumentType.getString(ctx, ConfigOption.DISABLED_MESSAGE.id)),
@@ -119,23 +129,25 @@ public class RepeaterSound implements ClientModInitializer
         ));
         //?}
 
-
         ServerCloseCallback.EVENT.register(cfg);
     }
 
-    private static SoundEvent register(String id) {
+    private static SoundEvent register(String id)
+    {
         // Version Specific
-        // Identifier.of
-        //? if <=1.18.2 {
-        /*Identifier identifier = new Identifier(MOD_ID, id);
-        *///?} else {
-        Identifier identifier = Identifier.of(MOD_ID, id);
-        //?}
-        // Registry, SoundEvent.of
+        // Identifier
+        //? if >=1.21.11 {
+        /*Identifier identifier = Identifier.fromNamespaceAndPath(MOD_ID, id);
+        *///?} elif >=1.21 {
+        ResourceLocation identifier = ResourceLocation.fromNamespaceAndPath(MOD_ID, id);
+        //?} else {
+        /*ResourceLocation identifier = new ResourceLocation(MOD_ID, id);
+        *///?}
+        // Registry, SoundEvent factory
         //? if <=1.19.2 {
         /*return Registry.register(Registry.SOUND_EVENT, identifier, new SoundEvent(identifier));
         *///?} else {
-        return Registry.register(Registries.SOUND_EVENT, identifier, SoundEvent.of(identifier));
+        return Registry.register(BuiltInRegistries.SOUND_EVENT, identifier, SoundEvent.createVariableRangeEvent(identifier));
         //?}
     }
 

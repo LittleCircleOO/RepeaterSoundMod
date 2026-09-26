@@ -4,15 +4,13 @@ import heyblack.repeatersound.util.InteractionMode;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 // Version Specific
-//? if <=1.18.2 {
-/*import net.minecraft.text.TranslatableText;
-*///?} else {
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-//?}
+//? if <1.19 {
+/*import net.minecraft.network.chat.TranslatableComponent;
+*///?}
 
 public class ConfigScreen {
     private static final ConfigManager CONFIG_MANAGER = ConfigManager.getInstance();
@@ -68,24 +66,26 @@ public class ConfigScreen {
         .build());
 
         general.addEntry(entryBuilder.startStrField(
-                        getTranslatableText("repeatersound.config.option.alarm_message"),
-                        CONFIG_MANAGER.getConfig(ConfigOption.DISABLED_MESSAGE.id)
-                )
-                .setDefaultValue(ConfigOption.DISABLED_MESSAGE.defaultValue)
-                .setSaveConsumer(newValue -> CONFIG_MANAGER.setConfigScreen(ConfigOption.DISABLED_MESSAGE.id, newValue))
-                .build());
+                        getTranslatableText("repeatersound.config.option.disabled_message"),
+                CONFIG_MANAGER.getConfig(ConfigOption.DISABLED_MESSAGE.id)
+        )
+        .setDefaultValue(ConfigOption.DISABLED_MESSAGE.defaultValue)
+        .setSaveConsumer(newValue -> CONFIG_MANAGER.setConfigScreen(ConfigOption.DISABLED_MESSAGE.id, newValue))
+        .build());
 
         return builder.build();
     }
 
     // Version Specific
-    //? if <=1.18.2 {
-    /*private static TranslatableText getTranslatableText(String key) {
-        return new TranslatableText(key);
+    //? if >=1.19 {
+    private static Component getTranslatableText(String key)
+    {
+        return Component.translatable(key);
     }
-    *///?} else {
-    private static MutableText getTranslatableText(String key) {
-        return Text.translatable(key);
+    //?} else {
+    /*private static Component getTranslatableText(String key)
+    {
+        return new TranslatableComponent(key);
     }
-    //?}
+    *///?}
 }

@@ -2,8 +2,8 @@
 
 [![Modrinth Downloads](https://img.shields.io/modrinth/dt/vt4lfXNC?color=%2300AF5C&logo=modrinth&style=flat-square)](https://modrinth.com/mod/repeater-sound)
 [![GitHub all releases](https://img.shields.io/github/downloads/HeyBlack233/RepeaterSoundMod/total?color=191970&logo=github&logoColor=181717&style=flat-square)](https://github.com/HeyBlack233/RepeaterSoundMod/releases)
-![Mod Version](https://img.shields.io/badge/Version-1.7.0-orange?style=flat-square)
-![MC Version](https://img.shields.io/badge/Minecraft-1.16%20--%201.21.10-blue?style=flat-square)
+![Mod Version](https://img.shields.io/badge/Version-1.8.0-orange?style=flat-square)
+![MC Version](https://img.shields.io/badge/Minecraft-1.16%20--%2026.3-blue?style=flat-square)
 
 ## Features
 
@@ -71,20 +71,27 @@ After the first initialize of the mod, a config file `repeatersound[version].jso
 
 ## New features in the current fork | 当前分叉新特性
 
-### Multi-Version + Compatibility with High Version (1.21.5+) | 多版本+高版本(1.21.5+)适配
-* Merged all code differences from 1.16.5 to 1.21.4, organized the code differences through StoneCutter, and supports building multiple versions in one go
-* Compatible with all versions between 1.21.5 and 1.21.10, currently supporting all versions from 1.16.5 to 1.21.10
-* 合并了目前 1.16.5~1.21.4 的全部代码差异，通过 StoneCutter 组织代码差异，并支持一次构建多个版本
-* 适配了 1.21.5~1.21.10 间的全部版本，目前已支持 1.16.5~1.21.10 的全部版本
+### Full-range multi-version builds on Mojang mappings | 基于 Mojang 官方映射的全范围多版本构建
+* Entire codebase migrated from Yarn to Mojang official mappings (Mojmap); Yarn is deprecated for 1.21.11+ and unavailable for 26.1+
+* Build system upgraded to Gradle 9.8 + StoneCutter 0.9 + loom-back-compat (Loom 1.18): obfuscated versions compile with Mojmap and remap to intermediary, while 26.1+ compiles against unobfuscated official names directly
+* Injection-point era analysis ensures every artifact truly covers its declared range (verified against per-version intermediary mappings), and the declared ranges are embedded in `fabric.mod.json` for metadata-level compatibility checks
+* Compatible with all versions from 1.16.5 to 26.3
+* 整体代码库从 Yarn 迁移至 Mojang 官方映射（Mojmap）；Yarn 已在 1.21.11+ 停止维护，且不支持 26.1+
+* 构建体系升级至 Gradle 9.8 + StoneCutter 0.9 + loom-back-compat（Loom 1.18）：混淆版本以 Mojmap 编译并重映射至 intermediary，26.1+ 直接以未混淆官方名编译
+* 通过注入点时代分析保证每个产物的声明支持范围真实有效（基于逐版本 intermediary 映射验证），并将支持范围写入 `fabric.mod.json` 供元数据层面校验
+* 目前支持 1.16.5 ~ 26.3 的全部版本
 
 ### Version Compatibility List | 版本兼容列表
 | Mod version \| 模组版本 | Compatible Game Versions \| 兼容游戏版本 |
 |---------------------|------------------------------------|
 | 1.16.5              | 1.16-1.16.5                        |
-| 1.17.1              | 1.17-1.17.1                        |
-| 1.18.2              | 1.18-1.18.2                        |
+| 1.18.2              | 1.17-1.18.2                        |
 | 1.19.2              | 1.19-1.19.2                        |
-| 1.20.4              | 1.19.3-1.20.4                      |
-| 1.21.4              | 1.20.5-1.21.4                      |
-| 1.21.8              | 1.21.5-1.21.8                      |
-| 1.21.10             | 1.21.9-1.21.10                     |
+| 1.20.1              | 1.19.3-1.20.4                      |
+| 1.20.6              | 1.20.5-1.20.6                      |
+| 1.21.1              | 1.21-1.21.1                        |
+| 1.21.4              | 1.21.2-1.21.4                      |
+| 1.21.10             | 1.21.5-1.21.10                     |
+| 1.21.11             | 1.21.11                            |
+| 26.1.2              | 26.1-26.2                          |
+| 26.3                | 26.3                               |
